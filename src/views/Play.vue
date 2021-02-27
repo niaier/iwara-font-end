@@ -1,7 +1,7 @@
 <!-- 组件说明 -->
 <template>
-    <div class=''>
-        
+    <div class='play'>
+        play
     </div>
 </template>
 

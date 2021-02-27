@@ -1,7 +1,7 @@
 <!-- 组件说明 -->
 <template>
-    <div class='love'>
-        love
+    <div class=''>
+        主页欢迎页面
     </div>
 </template>
 

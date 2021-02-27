@@ -1,16 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Video from '../views/Video.vue'
+import Love from '../views/Love.vue'
+import Playlist from '../views/Playlist.vue'
+import Play from '../views/Playlist.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-
+  { path: '/', component: Home},
+  { path: '/home', component: Home, redirect: '/' },
+  { path: '/video', component: Video },
+  { path: '/love', component: Love },
+  { path: '/playlist', component: Playlist },
+  { path: '/play', component: Play },
 ]
 
 const router = new VueRouter({
