@@ -6,25 +6,34 @@
 			<!-- 排序导航 -->
 			<div class="sort">
 				<div class="left-sort">
-					<h2>
+					<h2 @click="sortClick">
 						<span
 							class="iconfont icon-play"
 							style="color: red"
 						></span
 						>SortBy:
-						<el-link target="_blank">Date</el-link>
-						<el-link target="_blank">Love</el-link>
-						<el-link target="_blank">View</el-link>
+						<el-link target="_blank" data-id="upload_time"
+							>Date</el-link
+						>
+						<el-link target="_blank" data-id="love">Love</el-link>
+						<el-link target="_blank" data-id="views">View</el-link>
 					</h2>
 				</div>
-				<div class="right-right">
-					<el-link>正序</el-link>
-					<el-link>倒序</el-link>
+				<div class="right-order" @click="orderClick">
+					<el-link data-id="asc">正序</el-link>
+					<el-link data-id="desc">倒序</el-link>
 				</div>
 			</div>
 
 			<el-row :gutter="10">
-				<el-col :xs="12" :sm="12" :md="6" :lg="6"
+				<!-- 卡片单元盒子 -->
+				<el-col
+					:xs="12"
+					:sm="12"
+					:md="6"
+					:lg="6"
+					v-for="item in videoData"
+					:key="item.id"
 					><div class="grid-content bg-purple">
 						<el-card :body-style="{ padding: '0px' }">
 							<!-- 卡片上部 -->
@@ -35,12 +44,12 @@
 										<span
 											class="iconfont icon-favorites"
 										></span
-										>喜爱
+										>{{ item.love }}
 									</div>
 									<div>
 										<span class="iconfont icon-browse">
 										</span
-										>播放
+										>{{ item.views }}
 									</div>
 								</div>
 								<!-- 缩略图区域 -->
@@ -59,7 +68,8 @@
 								<!-- 视频信息上部 -->
 								<div class="top">
 									<div class="left-title">
-										<span>视频标题</span>
+										<span>标题</span>
+										<!-- <span>{{ item.title }}</span> -->
 									</div>
 								</div>
 								<!-- 视频信息下部 -->
@@ -68,37 +78,106 @@
 										><span
 											class="iconfont icon-bussiness-man"
 										></span
-										>视频作者</span
+										>{{ item.producer }}</span
 									>
-									<time class="time">2018-02-10</time>
+									<time class="time">{{
+										item.upload_time
+									}}</time>
 								</div>
 							</div>
 						</el-card>
 					</div></el-col
 				>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6"
-					><div class="grid-content bg-purple"></div
-				></el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6"
-					><div class="grid-content bg-purple"></div
-				></el-col>
-				<el-col :xs="12" :sm="12" :md="6" :lg="6"
-					><div class="grid-content bg-purple"></div
-				></el-col>
 			</el-row>
+			<div class="block">
+				<!-- <span class="demonstration">完整功能</span> -->
+				<!-- @size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+				:current-page="currentPage4" -->
+				<el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:page-size="pageSize"
+					:page-sizes="[20, 40, 80, 200]"
+					:current-page="curPage"
+					layout="total, sizes, prev, pager, next, jumper"
+					:total="total"
+				>
+				</el-pagination>
+			</div>
 		</el-card>
 	</div>
 </template>
 
 <script>
-//import x from ''
+import moment from 'moment'
 export default {
 	components: {},
 	data() {
-		return {}
+		return {
+			videoData: [],
+			total: 0,
+			pageSize: 40,
+			curPage: 1,
+			sort: 'upload_time',
+			desc: 'desc',
+		}
 	},
+	created() {
+		this.getVideoData()
+	},
+	mounted() {},
 	computed: {},
-	methods: {},
+	methods: {
+		async getVideoData() {
+			const { data: res } = await this.$http.get('/api/video', {
+				params: {
+					page: this.curPage,
+					pagesize: this.pageSize,
+					sort: this.sort,
+					desc: this.desc,
+				},
+			})
+			this.$router.push({
+				path: '/video',
+				query: {
+					page: this.curPage,
+					pagesize: this.pageSize,
+					sort: this.sort,
+					desc: this.desc,
+				},
+			})
+			// 格式化时间
+			res.video.forEach((item) => {
+				item.upload_time = moment(item.upload_time).format(
+					'YYYY-MM-DD HH:mm'
+				)
+			})
+			this.videoData = res.video
+			this.total = res.total
+			// console.log(res.video[0].id)
+		},
+		async handleCurrentChange(val) {
+			this.curPage = val
+			this.getVideoData()
+			console.log(`当前页: ${val}`)
+		},
+		async handleSizeChange(val) {
+			this.pageSize = val
+			this.getVideoData()
+			console.log(`每页 ${val} 条`)
+		},
+		async sortClick(e) {
+			this.sort = e.target.parentNode.dataset.id
+			this.getVideoData()
+			console.log(`根据${this.sort}排序`)
+		},
+		async orderClick(e) {
+			this.desc = e.target.parentNode.dataset.id
+			this.getVideoData()
+			console.log(`根据${this.desc}排序`)
+		},
+	},
 }
 </script>
 
@@ -111,13 +190,13 @@ export default {
 	align-content: space-between;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	height: 500px;
+	// height: 500px;
 	&:last-child {
 		margin-bottom: 0;
 	}
 }
 .el-col {
-	background-color: darkcyan;
+	// background-color: darkcyan;
 	// margin-top: 20px;
 	// margin-bottom: 20px;
 	// border-radius: 4px;
@@ -138,9 +217,11 @@ export default {
 	min-height: 240px;
 	display: flex;
 	justify-content: center;
+	margin-bottom: 20px;
 	// 视频卡片区域
 	.el-card {
 		position: relative;
+		width: 240px;
 	}
 }
 .row-bg {
@@ -162,8 +243,10 @@ export default {
 }
 
 .video-info {
+	height: 75px;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	// justify-content:space-between;
 }
 .top {
@@ -175,13 +258,19 @@ export default {
 }
 .bottom {
 	margin-top: 5px;
+	margin-bottom: 5px;
 	display: flex;
 	justify-content: space-between;
+	line-height: 18.4px;
+
 	.producer {
 		margin-left: -2px;
 	}
-	time {
+	.time {
+		display: inline-block;
+		padding-top: 2px;
 		padding-right: 10px;
+		vertical-align: bottom;
 	}
 }
 
@@ -213,13 +302,32 @@ export default {
 	display: flex;
 	justify-content: space-between;
 	.el-link {
-		padding:0 .3em;
+		padding: 0 0.3em;
 	}
-	.right-right {
-		.el-link{
-			line-height:72px;
+	.right-order {
+		.el-link {
+			line-height: 72px;
 		}
 	}
 }
 
+.top {
+	.left-title {
+		span {
+			width: 220px;
+			// overflow: hidden;
+			// text-overflow: ellipsis;
+			// white-space: nowrap;
+			overflow: hidden;
+
+			text-overflow: ellipsis;
+
+			display: -webkit-box;
+
+			-webkit-box-orient: vertical;
+
+			-webkit-line-clamp: 2;
+		}
+	}
+}
 </style>
