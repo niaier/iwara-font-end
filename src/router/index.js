@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 import Video from '../views/Video.vue'
 import Love from '../views/Love.vue'
 import Playlist from '../views/Playlist.vue'
-import Play from '../views/Playlist.vue'
+import Play from '../views/Play.vue'
 
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
@@ -18,7 +18,7 @@ const routes = [
   { path: '/video', component: Video },
   { path: '/love', component: Love },
   { path: '/playlist', component: Playlist },
-  { path: '/play', component: Play },
+  { path: '/play/:id(\\d+)', component: Play },
 ]
 
 const router = new VueRouter({

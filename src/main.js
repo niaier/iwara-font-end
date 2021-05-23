@@ -6,9 +6,15 @@ import './assets/css/global.css'
 import './assets/font/icon_font/iconfont.css'
 import axios from 'axios'
 import moment from 'moment'
+import 'default-passive-events'
+import VueCoreVideoPlayer from 'vue-video-player-self-controls'
+
+
+
 
 Vue.prototype.$http = axios
 Vue.prototype.$moment = moment
+Vue.use(VueCoreVideoPlayer)
 axios.defaults.baseURL = 'http://127.0.0.1:8000'
 
 // 重复路由报错解决

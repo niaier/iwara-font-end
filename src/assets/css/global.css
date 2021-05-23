@@ -1,20 +1,29 @@
+@media screen and (max-width: 1200px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+* {
+    margin: 0 ;
+    padding: 0 ;
+    
+
+}
+
 html,
 body,
 #app,
-#home
-{
-    margin:0;
-    padding:0;
-    height: 100%;
+#home {
+    margin      : 0;
+    padding     : 0;
+    height      : 100%;
     /* min-width: 1366px; */
 }
 
-
-
-
 .el-card {
-    box-shadow:none!important;
-    border:none;
+    box-shadow   : none !important;
+    border       : none;
     border-radius: 0px;
 }
 
